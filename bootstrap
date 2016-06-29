@@ -1,0 +1,10 @@
+#!/bin/sh
+# src/dbext/bootstrap
+# Copyright (C) 2016 Long Range Systems, LLC.  All rights reserved.
+
+libtoolize \
+&& aclocal \
+&& autoheader \
+&& autoconf \
+&& automake --add-missing --copy --foreign \
+&& echo "Bootstrap complete."

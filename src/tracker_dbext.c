@@ -4,6 +4,7 @@
  */
 
 #include <stddef.h>
+#include <stdio.h>
 #include <string.h>
 
 #include <sqlite3ext.h> /* Do not use <sqlite3.h>! */
@@ -16,6 +17,8 @@ SQLITE_EXTENSION_INIT1
 /* Insert your extension code here */
 
 static void _base64_to_uuid(sqlite3_context *, int, sqlite3_value **);
+static void _eui64_to_digi(sqlite3_context *, int, sqlite3_value **);
+static void _eui64_to_str(sqlite3_context *, int, sqlite3_value **);
 static void _so_to_isodate(sqlite3_context *, int, sqlite3_value **);
 
 #if !defined SQLITE_DETERMINISTIC
@@ -53,6 +56,28 @@ int sqlite3_extension_init(
         SQLITE_UTF8 | SQLITE_DETERMINISTIC,
         NULL,                   /* user data */
         _base64_to_uuid,        /* scalar function */
+        NULL,                   /* step function */
+        NULL,                   /* finalize function */
+        NULL);                  /* destructor */
+
+    sqlite3_create_function_v2(
+        db,
+        "eui64_to_digi",        /* function name */
+        1,                      /* number of parameters */
+        SQLITE_UTF8 | SQLITE_DETERMINISTIC,
+        NULL,                   /* user data */
+        _eui64_to_digi,         /* scalar function */
+        NULL,                   /* step function */
+        NULL,                   /* finalize function */
+        NULL);                  /* destructor */
+
+    sqlite3_create_function_v2(
+        db,
+        "eui64_to_str",         /* function name */
+        1,                      /* number of parameters */
+        SQLITE_UTF8 | SQLITE_DETERMINISTIC,
+        NULL,                   /* user data */
+        _eui64_to_str,          /* scalar function */
         NULL,                   /* step function */
         NULL,                   /* finalize function */
         NULL);                  /* destructor */
@@ -108,4 +133,52 @@ void _so_to_isodate(
     } else {
         sqlite3_result_null(ctx);
     }
+}
+
+void _eui64_to_digi(
+    sqlite3_context *ctx,
+    int argc,
+    sqlite3_value **argv)
+{
+    sqlite3_int64 eui64;
+    char buf[32];
+
+    eui64 = sqlite3_value_int64(argv[0]);
+    sprintf(
+        buf,
+        "[%02x:%02x:%02x:%02x:%02x:%02x:%02x:%02x]!",
+        ((int)(eui64 >> 56)) & 0xff,
+        ((int)(eui64 >> 48)) & 0xff,
+        ((int)(eui64 >> 40)) & 0xff,
+        ((int)(eui64 >> 32)) & 0xff,
+        ((int)(eui64 >> 24)) & 0xff,
+        ((int)(eui64 >> 16)) & 0xff,
+        ((int)(eui64 >> 8)) & 0xff,
+        (int)eui64 & 0xff);
+
+    sqlite3_result_text(ctx, buf, -1, SQLITE_TRANSIENT);
+}
+
+void _eui64_to_str(
+    sqlite3_context *ctx,
+    int argc,
+    sqlite3_value **argv)
+{
+    sqlite3_int64 eui64;
+    char buf[32];
+
+    eui64 = sqlite3_value_int64(argv[0]);
+    sprintf(
+        buf,
+        "%02x:%02x:%02x:%02x:%02x:%02x:%02x:%02x",
+        ((int)(eui64 >> 56)) & 0xff,
+        ((int)(eui64 >> 48)) & 0xff,
+        ((int)(eui64 >> 40)) & 0xff,
+        ((int)(eui64 >> 32)) & 0xff,
+        ((int)(eui64 >> 24)) & 0xff,
+        ((int)(eui64 >> 16)) & 0xff,
+        ((int)(eui64 >> 8)) & 0xff,
+        (int)eui64 & 0xff);
+
+    sqlite3_result_text(ctx, buf, -1, SQLITE_TRANSIENT);
 }

@@ -35,7 +35,7 @@ __declspec(dllexport)
 ** the next following ".", converting each character to lowercase, and
 ** discarding the first three characters if they are "lib".
 */
-int sqlite3_extension_init(
+int sqlite3_dbext_init(
     sqlite3 *db,
     char **pzErrMsg,
     const sqlite3_api_routines *pApi)

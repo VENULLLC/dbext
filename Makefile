@@ -26,3 +26,5 @@ install: $(DBEXT_BUILD_DIR)/$(OUT)
 clean:
 	rm -f $(DBEXT_BUILD_DIR)/$(OUT)
 	rm -f src/*.o
+
+.PHONY: all

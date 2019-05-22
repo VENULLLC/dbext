@@ -48,5 +48,3 @@ clean:
 	rm -f src/*.o
 	$(MAKE) -C libb64-1.2 clean
 	$(MAKE) -C libuuid-1.0.3 distclean
-
-.PHONY: all

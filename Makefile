@@ -1,6 +1,7 @@
 # Long Range Systems, LLC 2017
 
-DBEXT_BUILD_DIR := $(PWD)/build
+DBEXT_BUILD_DIR ?= $(PWD)/build
+PREFIX ?= $(DBEXT_BUILD_DIR)
 CC = $(CROSS_COMPILE)gcc
 OUT = dbext.so
 SOURCES = $(wildcard src/*.c)
@@ -29,9 +30,10 @@ $(DBEXT_BUILD_DIR)/uuid/lib/libuuid.a: libuuid-1.0.3.tar.gz
 	cd deps && tar xf ../libuuid-1.0.3.tar.gz
 	cd deps/libuuid-1.0.3 && ./configure --with-pic --disable-shared --enable-static --prefix=$(DBEXT_BUILD_DIR)/uuid --host=$(if $(TARGET_TUPLE),$(TARGET_TUPLE),$(shell gcc -dumpmachine)) && CFLAGS=-fPIC $(MAKE) && $(MAKE) install
 
-$(DBEXT_BUILD_DIR)/$(OUT): $(FINAL_OBJECTS) deps/libb64-1.2/src/libb64.a $(DBEXT_BUILD_DIR)/uuid/lib/libuuid.a
+$(PREFIX)/$(OUT): $(FINAL_OBJECTS) deps/libb64-1.2/src/libb64.a $(DBEXT_BUILD_DIR)/uuid/lib/libuuid.a
 	@echo $(SOURCES)
 	mkdir -p $(DBEXT_BUILD_DIR)
+	mkdir -p $(PREFIX)
 	@echo $^
 	$(CC) -shared -o $@ $(FINAL_OBJECTS) $(LDFLAGS)
 

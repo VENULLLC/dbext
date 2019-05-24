@@ -18,7 +18,7 @@ libb64-1.2.src.zip:
 deps/libb64-1.2/src/libb64.a: libb64-1.2.src.zip
 	mkdir -p deps
 	cd deps && unzip -o ../libb64-1.2.src.zip
-	CFLAGS=-fPIC $(MAKE) -C libb64-1.2 CFLAGS=-fPIC
+	CFLAGS=-fPIC $(MAKE) -C deps/libb64-1.2 CFLAGS=-fPIC
 	
 libuuid-1.0.3.tar.gz:
 	wget http://sourceforge.net/projects/libuuid/files/libuuid-1.0.3.tar.gz

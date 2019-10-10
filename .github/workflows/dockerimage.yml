@@ -8,7 +8,7 @@ jobs:
     - name: Build the Docker image
       run: |
           export TAG=${GITHUB_SHA:0:8}
-          docker build . --file Dockerfile --tag docker.pkg.github.com/VENULLLC/dbext/dbext:$TAG
+          docker build . --file Dockerfile --tag docker.pkg.github.com/venulllc/dbext/dbext:$TAG
     - name: Push Docker image
       run: |
           export TAG=${GITHUB_SHA:0:8}

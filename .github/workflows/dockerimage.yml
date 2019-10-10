@@ -8,12 +8,12 @@ jobs:
     - name: Build the Docker image
       run: |
           export TAG=${GITHUB_SHA:0:8}
-          docker build . --file Dockerfile --tag docker.pkg.github.com/venulllc/dbext/dbext:$TAG
+          docker build . --file Dockerfile --tag docker.pkg.github.com/VENULLLC/dbext/dbext:$TAG
     - name: Push Docker image
       run: |
           export TAG=${GITHUB_SHA:0:8}
           echo "$DOCKER_PASSWORD" | docker login docker.pkg.github.com -u "$DOCKER_USERNAME" --password-stdin
-          docker push docker.pkg.github.com/venulllc/dbext/dbext:$TAG
+          docker push docker.pkg.github.com/VENULLLC/dbext/dbext:$TAG
       if: github.ref == 'refs/heads/master'
       env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}

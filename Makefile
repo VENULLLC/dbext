@@ -11,7 +11,7 @@ FINAL_OBJECTS = $(addprefix $(DBEXT_BUILD_DIR)/, $(OBJECTS))
 LDFLAGS = -Wl,-rpath,'$$ORIGIN' -L$(DBEXT_DEPS_DIR)/libb64-1.2/src -L$(DBEXT_BUILD_DIR)/uuid/lib -lb64 -luuid
 CFLAGS = -Wall -I$(DBEXT_DEPS_DIR)/libb64-1.2/include -I$(DBEXT_BUILD_DIR)/uuid/include -fPIC
 
-all: $(DBEXT_BUILD_DIR)/$(OUT)
+all: $(PREFIX)/$(OUT)
 
 libb64-1.2.src.zip:
 	wget https://sourceforge.net/projects/libb64/files/libb64/libb64/libb64-1.2.src.zip
@@ -38,9 +38,9 @@ $(PREFIX)/$(OUT): deps/libb64-1.2/src/libb64.a $(DBEXT_BUILD_DIR)/uuid/lib/libuu
 	@echo $^
 	$(CC) -shared -o $@ $(FINAL_OBJECTS) $(LDFLAGS)
 
-%.o: $(SOURCES)
+$(DBEXT_BUILD_DIR)/tracker_dbext.o: src/tracker_dbext.c deps/libb64-1.2/src/libb64.a $(DBEXT_BUILD_DIR)/uuid/lib/libuuid.a
 	mkdir -p $(DBEXT_BUILD_DIR)
-	$(CC) -o $@ $(CFLAGS) -c $<
+	$(CC) -o $@ $(CFLAGS) -c src/tracker_dbext.c
 
 install: $(DBEXT_BUILD_DIR)/$(OUT)
 	mkdir -p $(PREFIX)/lib
@@ -55,4 +55,4 @@ clean:
 	$(MAKE) -C deps/libb64-1.2 clean
 	$(MAKE) -C deps/libuuid-1.0.3 distclean
 
-.PHONY: all
+.PHONY: clean

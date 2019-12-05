@@ -8,8 +8,8 @@ OUT = dbext.so
 SOURCES = $(wildcard src/*.c)
 OBJECTS = $(notdir $(SOURCES:.c=.o))
 FINAL_OBJECTS = $(addprefix $(DBEXT_BUILD_DIR)/, $(OBJECTS))
-LDFLAGS = -Wl,-rpath,'$$ORIGIN' -L$(DBEXT_DEPS_DIR)/libb64-1.2/src -L$(DBEXT_BUILD_DIR)/uuid/lib -lb64 -luuid
-CFLAGS = -Wall -I$(DBEXT_DEPS_DIR)/libb64-1.2/include -I$(DBEXT_BUILD_DIR)/uuid/include -fPIC
+LDFLAGS = -Wl,-rpath,'$$ORIGIN' -L$(DBEXT_DEPS_DIR)/libb64-1.2/src -L$(DBEXT_BUILD_DIR)/uuid/lib -lb64 -luuid $(EXTRA_LDFLAGS)
+CFLAGS = -Wall -I$(DBEXT_DEPS_DIR)/libb64-1.2/include -I$(DBEXT_BUILD_DIR)/uuid/include -fPIC $(EXTRA_CFLAGS)
 
 all: $(PREFIX)/$(OUT)
 
